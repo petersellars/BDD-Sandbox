@@ -1,0 +1,192 @@
+<html xmlns:concordion="http://www.concordion.org/2007/concordion">
+
+	<body>
+	
+		<!--  concordion:assertEquals -->
+		<div class="example">
+		    <div class="commentary">
+		    	<p>
+		    		This is a basic usage of concordion:assertEquals. The fixture 
+		    		return value is checked against the text in the instrumented html.
+		    	</p>
+		    </div>
+			<h3>Basic concordion:assertEquals usage</h3>
+<pre concordion:set="#snippet">
+&lt;p&gt;
+  <b>&lt;span concordion:assertEquals="shouldSeeBadCredentialsErrorMessage()"&gt;</b>
+    Your login attempt was not successful, try again. Reason: Bad credentials
+  <b>&lt;/span&gt;</b>
+&lt;/p&gt;    
+</pre>
+			<p>
+				When trying to login to the application as the administrator,
+				if no password is entered the user should see the bad
+				credentials error message:<br/>
+				<span concordion:assertEquals="shouldSeeBadCredentialsErrorMessage()">
+			  	Your login attempt was not successful, try again. Reason: Bad credentials
+				</span>
+			</p>
+		</div>
+		
+		<div class="example">
+		    <div class="commentary">
+		    	<p>
+		    		This is a basic usage of concordion:assertEquals that uses the 
+		    		errorMessage property value. The property value is checked against
+		    		the text in the instrumented html.
+		    	</p>
+		    </div>
+			<h3>Basic concordion:assertEquals property usage</h3>
+<pre concordion:set="#snippet">
+&lt;p&gt;
+  <b>&lt;span concordion:assertEquals="errorMessage"&gt;</b>
+    Your login attempt was not successful, try again. Reason: Bad credentials	
+  <b>&lt;/span&gt;</b>
+&lt;/p&gt;    
+</pre>
+			<p>
+				When trying to login to the application as the administrator,
+				if no password is entered the user should see the bad
+				credentials error message:<br/>
+				<span concordion:assertEquals="errorMessage">
+			  	Your login attempt was not successful, try again. Reason: Bad credentials
+				</span>
+			</p>
+		</div>
+		
+		<!-- concordion:set -->
+		<div class="example">
+			<div class="commentary">
+				<p>
+					This is a use of concordion:set that sets the #user value
+					from the instrumented html. The #user value is then passed
+					to the loggedInMessageFor(#user) fixture. The fixture
+					return value is checked against the text in the instrumented
+					html.
+				</p>
+			</div>
+			<h3>Use of concordion:set to store an instrumented value for use in a fixture</h3>
+<pre concordion:set="#snippet">
+&lt;p&gt;
+  When successfully logged in as user <b>&lt;span concordion:set="#user"&gt;</b>admin<b>&lt;/span&gt;</b>
+  I should see the <b>&lt;span concordion:assertEquals="loggedInMessageFor(#user)"&gt;</b>
+  Welcome admin to the BDD-Sandbox<b>&lt;/span&gt;</b> message
+&lt;/p&gt;    
+</pre>
+			<p>
+				When successfully logged in as user <span concordion:set="#user">admin</span>
+				I should see the <span concordion:assertEquals="loggedInMessageFor(#user)">
+				Welcome admin to the BDD-Sandbox</span> message
+			</p>
+		</div>
+		
+		<!-- concordion:execute -->
+		<!--
+		<p>
+			When successfully logged in as an <span concordion:set="#role">Administrator</span>
+			<span concordion:execute="setRole(#role)"></span>
+			I should see the <span concordion:assertEquals="loggedInMessageForRole()">Welcome Administrator</span>
+			message
+		</p>
+		-->
+		
+		<!-- concordion:execute #TEXT -->
+		<!--
+		<p>
+			When successfully logged in as an <span concordion:execute="setRole(#TEXT)">Administrator</span>
+			I should see the <span concordion:assertEquals="loggedInMessageForRole()">Welcome Administrator</span>
+			message
+		</p>
+		-->
+		
+		<!-- concordion:execute Object result -->
+		<!--
+		<p>
+			When successfully logged in as an Administrator
+			the <span concordion:execute="#message = split(#TEXT)">Welcome Administrator</span> message
+			should contain the <span concordion:assertEquals="#message.welcome">Welcome</span> and 
+			the <span concordion:assertEquals="#message.role">Administrator</span> text.
+		</p>
+		-->
+		
+		<!-- concordion:execute Child execution-->
+		<!-- 
+			 First of all it processes any child set commands then it runs its own command, then any child 
+			 execute commands and finally any child assertEquals commands.  
+		-->
+		<!--
+		<p concordion:execute="#messageForRole = loggedInMessageFor(#role)">
+			I should see the <span concordion:assertEquals="#messageForRole">Welcome Administrator</span> message
+			when successfully logged in as an <span concordion:set="#role">Administrator</span>
+		</p>
+		-->
+		
+		<!-- concordion:execute Table -->
+		<!--
+		<table>
+			<tr>
+				<th>User</th>
+				<th>Role</th>
+			</tr>	
+			<tr concordion:execute="#messageForRole = loggedInMessageFor(#role)">
+				<td concordion:set="#role">Administrator</td>
+				<td concordion:assertEquals="#messageForRole">Welcome Administrator</td>
+			</tr>
+			<tr concordion:execute="#messageForRole = loggedInMessageFor(#role)">
+				<td concordion:set="#role">Administrator</td>
+				<td concordion:assertEquals="#messageForRole">Welcome Administrator</td>
+			</tr>
+		</table>
+		-->
+		
+		<!-- concordion:execute Table Shortcut -->
+		<!--
+		<table concordion:execute="#messageForRole = loggedInMessageFor(#role)">
+			<tr>
+				<th concordion:set="#role">User</th>
+				<th concordion:assertEquals="#messageForRole">Role</th>
+			</tr>	
+			<tr>
+				<td>Administrator</td>
+				<td>Welcome Administrator</td>
+			</tr>
+			<tr>
+				<td>Administrator</td>
+				<td>Welcome Administrator</td>
+			</tr>
+		</table>
+		-->
+		
+		<!-- concordion:verifyRows -->
+		<!-- 
+			#loopVar : expression
+		 -->
+		<!--
+		<p>Given the following users:</p>
+		<table concordion:execute="setUpUser(#user)">
+			<tr>
+				<th concordion:set="#user">Users</th>
+			</tr>
+			<tr><td>Administrator 1</td></tr>
+			<tr><td>Administrator 2</td></tr>
+			<tr><td>User 1</td></tr>
+			<tr><td>Administrator 3</td></tr>
+			<tr><td>User 2</td></tr>
+		</table>
+		<p>
+			Getting only the "<b concordion:set="#searchString">Administrator</b>" users
+			will return:
+		</p>
+		<table concordion:verifyRows="#username:getSearchResultsFor(#searchString)">
+			<tr>
+				<th concordion:assertEquals="#username">Matching Users</th>
+			</tr>
+			<tr><td>Administrator 1</td></tr>
+			<tr><td>Administrator 2</td></tr>
+			<tr><td>Administrator 3</td></tr>
+		</table>
+		-->
+		
+	</body>
+
+</html>

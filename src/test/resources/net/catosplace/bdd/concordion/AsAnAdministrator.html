@@ -81,14 +81,32 @@
 		</div>
 		
 		<!-- concordion:execute -->
-		<!--
-		<p>
-			When successfully logged in as an <span concordion:set="#role">Administrator</span>
-			<span concordion:execute="setRole(#role)"></span>
-			I should see the <span concordion:assertEquals="loggedInMessageForRole()">Welcome Administrator</span>
-			message
-		</p>
-		-->
+		<div class="example">
+			<div class="commentary">
+				<p>
+					This is a use of concordion:execute that executes an instruction
+					with a void result. The setRole(#role) method sets the role to be
+					used. The #role is set to 'Administrator'. The loggedInMessageForRole()
+					method return value is checked against the text in the instrumented
+					html.
+				</p>
+			</div>
+			<h3>Use of concordion:execute executing an instruction with a void result</h3>
+<pre concordion:set="#snippet">
+&lt;p&gt;
+  When successfully logged is as an <b>&lt;span concordion:set="#role"&gt;</b>Administrator<b>&lt;/span&gt;</b>
+  <b>&lt;span concordion:execute="setRole(#role)"/&gt;</b>
+  I should see the <b>&lt;span concordion:assertEquals="loggedInMessageForRole()"&gt;</b>
+  Welcome admin to the BDD-Sandbox<b>&lt;/span&gt;</b> message
+&lt;/p&gt;
+</pre>
+			<p>
+				When successfully logged is as an <span concordion:set="#role">Administrator</span>
+				<span concordion:execute="setRole(#role)"></span>
+				I should see the <span concordion:assertEquals="loggedInMessageForRole()">
+				Welcome admin to the BDD-Sandbox</span> message
+			</p>
+		</div>
 		
 		<!-- concordion:execute #TEXT -->
 		<!--

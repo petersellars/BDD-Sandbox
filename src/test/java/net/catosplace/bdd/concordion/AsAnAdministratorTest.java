@@ -30,6 +30,7 @@ public class AsAnAdministratorTest {
 	private HomePage homePage;
 	
 	private String errorMessage;
+	private String role;
 	
 	private static final String ADMIN_USER = "admin";
 	private static final String ADMIN_PASSWORD = "password";
@@ -37,6 +38,7 @@ public class AsAnAdministratorTest {
 	@Before
 	public void initWebDriverAndPageFactoryElements() {
 		driver = new HtmlUnitDriver();
+		driver.get(URL_BDD_APP_LOGOUT);
 		driver.get(URL_BDD_APPLICATION);
 	}
 	
@@ -52,6 +54,7 @@ public class AsAnAdministratorTest {
 	 * @return the login page error message
 	 */
 	public String shouldSeeBadCredentialsErrorMessage() {
+		initWebDriverAndPageFactoryElements();
 		loginPage = PageFactory.initElements(driver, LoginPage.class);
 		loginPage = loginPage.loginAsExpectingError(ADMIN_USER, null);
 		assertNotNull("An error message should occur on the current page",
@@ -67,6 +70,7 @@ public class AsAnAdministratorTest {
 	 * @return the errorMessage property
 	 */
 	public String getErrorMessage() {
+		initWebDriverAndPageFactoryElements();
 		loginPage = PageFactory.initElements(driver, LoginPage.class);
 		loginPage = loginPage.loginAsExpectingError(ADMIN_USER, null);
 		setErrorMessage(loginPage.getErrorMessage());
@@ -86,13 +90,41 @@ public class AsAnAdministratorTest {
 	 *  - the welcome message for the user successfully logged in
 	 */
 	public String loggedInMessageFor(String user) {
+		initWebDriverAndPageFactoryElements();
 		loginPage = PageFactory.initElements(driver, LoginPage.class);
 		homePage = loginPage.loginSuccessfully(user, ADMIN_PASSWORD);
 		PageFactory.initElements(driver, homePage);
 		return homePage.getWelcomeMessage();
 	}
 	
-	private String role;
+	/**
+	 * Gets the message when a user of the type passed in successfully
+	 * logs in to the application
+	 * @param role
+	 *  - the role of user to successfully log in with
+	 * @return
+	 *  - the welcome message for the user of the role successfully logged in
+	 */
+	public String loggedInMessageForRole() {
+		initWebDriverAndPageFactoryElements();
+		loginPage = PageFactory.initElements(driver, LoginPage.class);
+		homePage = loginPage.loginRoleSuccessfully(getRole());
+		PageFactory.initElements(driver, homePage);
+		return homePage.getWelcomeMessage();
+	}
+	
+	/** GETTERS & SETTERS **/
+	
+	public void setRole(String role) {
+		this.role = role;
+	}
+	
+	private String getRole() {
+		return this.role;
+	}
+	
+	//---------------------------------------------------------------
+	
 	private Set<String> users = new HashSet<String>();
 	
 	class Message {
@@ -115,18 +147,6 @@ public class AsAnAdministratorTest {
 		public String getRole() {
 			return this.role;
 		}
-	}
-	
-	public String loggedInMessageForRole() {
-		return "Welcome " + getRole();
-	}
-
-	public void setRole(String role) {
-		this.role = role;
-	}
-	
-	private String getRole() {
-		return this.role;
 	}
 	
 	public Message split(String welcomeMessage) {

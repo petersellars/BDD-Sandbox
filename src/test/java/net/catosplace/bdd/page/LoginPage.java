@@ -46,6 +46,16 @@ public class LoginPage {
 		return new HomePage(driver);
 	}
 	
+	public HomePage loginRoleSuccessfully(String role) {
+		j_username.clear();
+		j_username.sendKeys("admin");
+		j_password.clear();
+		j_password.sendKeys("password");
+		loginForm.submit();
+		
+		return new HomePage(driver);
+	}
+	
 	public String getErrorMessage() {
 		return driver.findElement(By.xpath("//html/body/p/font")).getText();
 	}

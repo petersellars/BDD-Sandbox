@@ -107,73 +107,289 @@
 				Welcome admin to the BDD-Sandbox</span> message
 			</p>
 		</div>
+
+		<div class="example">
+			<div class="commentary">
+				<p>
+					This is a use of concordion:execute that executes an instruction
+					with a void result. The special #TEXT variable is used to set the
+					role value. The #TEXT is set to the text of the current element.
+					The loggedInMessageForRole() method return value is checked against
+					the text in the instrumented html.
+				</p>
+			</div>
+			<h3>Use of concordion:execute executing an instruction with a void result using the special #TEXT variable</h3>
+<pre concordion:set="#snippet">
+&lt;p&gt;
+  When successfully logged is as an
+  <b>&lt;span concordion:execute="setRole(#TEXT)"&gt;</b>Administrator<b>&lt;/span&gt;</b>
+  I should see the <b>&lt;span concordion:assertEquals="loggedInMessageForRole()"&gt;</b>
+  Welcome admin to the BDD-Sandbox<b>&lt;/span&gt;</b> message
+&lt;/p&gt;
+</pre>
+			<p>
+				When successfully logged is as an
+				<span concordion:execute="setRole(#TEXT)">Administrator</span>
+				I should see the <span concordion:assertEquals="loggedInMessageForRole()">
+				Welcome admin to the BDD-Sandbox</span> message
+			</p>
+		</div>
 		
-		<!-- concordion:execute #TEXT -->
-		<!--
-		<p>
-			When successfully logged in as an <span concordion:execute="setRole(#TEXT)">Administrator</span>
-			I should see the <span concordion:assertEquals="loggedInMessageForRole()">Welcome Administrator</span>
-			message
-		</p>
-		-->
+		<div class="example">
+			<div class="commentary">
+				<p>
+					A concordion:execute with no return value often indicates a bad
+					smell. A better approach is to pass the value as a parameter
+					to the method being called.
+				</p>
+			</div>
+			<h3>A better approach than returning no value using concordion:execute</h3>
+<pre concordion:set="#snippet">
+&lt;p&gt;
+  When successfully logged is as an
+  <b>&lt;span concordion:set="#role"&gt;</b>Administrator<b>&lt;/span&gt;</b>
+  I should see the <b>&lt;span concordion:assertEquals="loggedInMessageForRole(#role)"&gt;</b>
+  Welcome admin to the BDD-Sandbox<b>&lt;/span&gt;</b> message
+&lt;/p&gt;
+</pre>
+			<p>
+				When successfully logged is as an
+				<span concordion:set="#role">Administrator</span>
+				I should see the <span concordion:assertEquals="loggedInMessageForRole(#role)">
+				Welcome admin to the BDD-Sandbox</span> message
+			</p>
+		</div>
 		
-		<!-- concordion:execute Object result -->
-		<!--
-		<p>
-			When successfully logged in as an Administrator
-			the <span concordion:execute="#message = split(#TEXT)">Welcome Administrator</span> message
-			should contain the <span concordion:assertEquals="#message.welcome">Welcome</span> and 
-			the <span concordion:assertEquals="#message.role">Administrator</span> text.
-		</p>
-		-->
+		<!-- concordion:execute returning an object result -->
+		<div class="example">
+			<div class="commentary">
+				<p>
+					This is a use of concordion:execute that executes an instruction
+					returning an object result. Use this approach when there is a need
+					to check more than one result of a behaviour. The variable #message
+					will be the object returned by the split() method. This object
+					will contain the welcome and role properties.
+				</p>
+			</div>
+			<h3>Use of concordion:execute executing an instruction that returns an object result</h3>
+<pre concordion:set="#snippet">
+&lt;p&gt;
+  When successfully logged is as an Administrator the
+  <b>&lt;span concordion:execute="#messge = split(#TEXT)"&gt;</b>Welcome Administrator<b>&lt;/span&gt;</b> message
+  should contain the <b>&lt;span concordion:assertEquals="#message.welcome"&gt;</b>Welcome<b>&lt;/span&gt;</b>
+  and the <b>&lt;span concordion:assertEquals="#message.role"&gt;</b>Administrator<b>&lt;/span&gt;</b> text.
+&lt;/p&gt;
+</pre>
+			<p>
+				When successfully logged in as an Administrator
+				the <span concordion:execute="#message = split(#TEXT)">Welcome Administrator</span>
+				message should contain the <span concordion:assertEquals="#message.welcome">Welcome</span>
+				and the <span concordion:assertEquals="#message.role">Administrator</span> text.
+			</p>
+		</div>
 		
-		<!-- concordion:execute Child execution-->
-		<!-- 
-			 First of all it processes any child set commands then it runs its own command, then any child 
-			 execute commands and finally any child assertEquals commands.  
-		-->
-		<!--
-		<p concordion:execute="#messageForRole = loggedInMessageFor(#role)">
-			I should see the <span concordion:assertEquals="#messageForRole">Welcome Administrator</span> message
-			when successfully logged in as an <span concordion:set="#role">Administrator</span>
-		</p>
-		-->
+		<!-- concordion:execute working with child command execution -->
+		<div class="example">
+			<div class="commentary">
+					<p>
+						This is a use of concordion:execute that works with child
+						command execution. First it runs any child set commands and
+						then runs its own command. It then runs any child execute
+						commands and finally any child assertEquals commands.
+					</p>
+			</div>
+			<h3>
+			    Use of concordion:execute executing working with child command execution to deal with 
+			    unusual sentence structure
+			</h3>
+<pre concordion:set="#snippet">
+<b>&lt;p concordion:execute="#messageForRole = loggedInMessageForRole(#role)"&gt;</b>
+  I should see the <b>&lt;span concordion:assertEquals="#messageForRole"&gt;</b>Welcome admin to the BDD-Sandbox
+  <b>&lt;/span&gt;</b> message when successfully logged in as an <b>&lt;span concordion:set="#role"&gt;</b>Administrator<b>&lt;/span&gt;</b>
+<b>&lt;/p&gt;</b>
+</pre>
+			<p concordion:execute="#messageForRole = loggedInMessageForRole(#role)">
+				I should see the <span concordion:assertEquals="#messageForRole">Welcome admin to the BDD-Sandbox</span> message
+				when successfully logged in as an <span concordion:set="#role">Administrator</span>
+			</p>
+		</div>
 		
-		<!-- concordion:execute Table -->
-		<!--
-		<table>
-			<tr>
-				<th>User</th>
-				<th>Role</th>
-			</tr>	
-			<tr concordion:execute="#messageForRole = loggedInMessageFor(#role)">
-				<td concordion:set="#role">Administrator</td>
-				<td concordion:assertEquals="#messageForRole">Welcome Administrator</td>
-			</tr>
-			<tr concordion:execute="#messageForRole = loggedInMessageFor(#role)">
-				<td concordion:set="#role">Administrator</td>
-				<td concordion:assertEquals="#messageForRole">Welcome Administrator</td>
-			</tr>
-		</table>
-		-->
+		<!-- concordion:execute table -->
+		<div class="example">
+			<div class="commentary">
+					<p>
+						This is a use of concordion:execute used to show several
+						examples of a behaviour. It prevents the need to repeat the
+						sentence structure.
+					</p>
+			</div>
+			<h3>
+			    Use of concordion:execute to show several examples of a behaviour
+			</h3>
+<pre concordion:set="#snippet">
+&lt;table&gt;
+  &lt;tr&gt;
+    &lt;th&gt;User&lt;/th&gt;
+    &lt;th&gt;Role&lt;/th&gt;
+  &lt;/tr&gt;
+  <b>&lt;tr concordion:execute="#messageForRole = loggedInMessageFor(#user)"&gt;</b>
+    <b>&lt;td concordion:set="#user"&gt;</b>admin<b>&lt;/td&gt;</b>
+    <b>&lt;td concordion:assertEquals="#messageForRole"&gt;</b>Welcome admin to the BDD-Sandbox<b>&lt;/td&gt;</b>
+  <b>&lt;/tr&gt;</b>
+  <b>&lt;tr concordion:execute="#messageForRole = loggedInMessageFor(#user)"&gt;</b>
+    <b>&lt;td concordion:set="#user"&gt;</b>cato<b>&lt;/td&gt;</b>
+    <b>&lt;td concordion:assertEquals="#messageForRole"&gt;</b>Welcome cato to the BDD-Sandbox<b>&lt;/td&gt;</b>
+  <b>&lt;/tr&gt;</b>
+&lt;/table&gt;
+</pre>
+			<p>When each user logs in there welcome message should contain their username</p>	
+			<table>
+				<tr>
+					<th>User</th>
+					<th>Role</th>
+				</tr>	
+				<tr concordion:execute="#messageForRole = loggedInMessageFor(#user)">
+					<td concordion:set="#user">admin</td>
+					<td concordion:assertEquals="#messageForRole">Welcome admin to the BDD-Sandbox</td>
+				</tr>
+				<tr concordion:execute="#messageForRole = loggedInMessageFor(#user)">
+					<td concordion:set="#user">cato</td>
+					<td concordion:assertEquals="#messageForRole">Welcome cato to the BDD-Sandbox</td>
+				</tr>
+			</table>
+		</div>
 		
-		<!-- concordion:execute Table Shortcut -->
-		<!--
-		<table concordion:execute="#messageForRole = loggedInMessageFor(#role)">
-			<tr>
-				<th concordion:set="#role">User</th>
-				<th concordion:assertEquals="#messageForRole">Role</th>
-			</tr>	
-			<tr>
-				<td>Administrator</td>
-				<td>Welcome Administrator</td>
-			</tr>
-			<tr>
-				<td>Administrator</td>
-				<td>Welcome Administrator</td>
-			</tr>
-		</table>
-		-->
+		<!-- concordion:execute table shortcut -->
+		<div class="example">
+			<div class="commentary">
+					<p>
+						This is a use of concordion:execute used to show several
+						examples of a behaviour using the shortcut method. Placing
+						the execute command on the &lt;table&gt; element the commands on 
+						the header row (the row containing &lt;th&gt; elements) are copied
+						to each detail row (rows containing &lt;td&gt; elements) and the
+						execute command is run on each detail row
+					</p>
+			</div>
+			<h3>
+			    Use of concordion:execute to show several examples of a behaviour using the shortcut method
+			</h3>
+<pre concordion:set="#snippet">
+<b>&lt;table concordion:execute="#messageForRole = loggedInMessageFor(#user)"&gt;</b>
+  &lt;tr&gt;
+    <b>&lt;th concordion:set="#user"&gt;User&lt;/th&gt;</b>
+    <b>&lt;th concordion:assertEquals="#messageForRole"&gt;Role&lt;/th&gt;</b>
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;admin&lt;/td&gt;
+    &lt;td&gt;Welcome admin to the BDD-Sandbox&lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;cato&lt;/td&gt;
+    &lt;td&gt;Welcome cato to the BDD-Sandbox&lt;/td&gt;
+  &lt;/tr&gt;
+<b>&lt;/table&gt;</b>
+</pre>
+			<p>When each user logs in their welcome message should contain their username</p>
+			<table concordion:execute="#messageForRole = loggedInMessageFor(#user)">
+				<tr>
+					<th concordion:set="#user">User</th>
+					<th concordion:assertEquals="#messageForRole">Role</th>
+				</tr>	
+				<tr>
+					<td>admin</td>
+					<td>Welcome admin to the BDD-Sandbox</td>
+				</tr>
+				<tr>
+					<td>cato</td>
+					<td>Welcome cato to the BDD-Sandbox</td>
+				</tr>
+			</table>
+		</div>
+		
+		<!-- concordion:verifyRows -->
+		<div class="example">
+			<div class="commentary">
+					<p>
+						This is a use of the concordion:verifyRows command to check the
+						contents of a collection of results. The syntax for the verifyRows
+						command is:<br/>
+						<b><em>#loopVar : expression</em></b><br/>
+						Where expression returns an Iterable object with a predictable iteration
+						order, (e.g. a List, LinkedHashSet or a TreeSet). And #loopVar provides
+						access to the current object during iteration and allows the assertEquals
+						method to check its value
+					</p>
+			</div>
+			<h3>
+			    Use of concordion:verifyRows to check the contents of a collection of results
+			</h3>
+<pre concordion:set="#snippet">
+<b>&lt;table concordion:execute="#setUpUser"&gt;</b>
+  &lt;tr&gt;
+    <b>&lt;th concordion:set="#user"&gt;User&lt;/th&gt;</b>
+  &lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;admin&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;cato&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;cato1971&lt;/td&gt;&lt;/tr&gt;
+<b>&lt;/table&gt;</b>
+&lt;p&gt;
+  Getting only the users containing the string <b>"&lt;b concordion:set=#searchString&gt;admin&lt;/b&gt;"</b>
+  will return:
+&lt;/p&gt;
+&lt;!-- #loopVar : expression --&gt;
+<b>&lt;table concordion:verifyRows="#username:getSearchResultsFor(#searchString)"&gt;</b>
+  &lt;tr&gt;
+    <b>&lt;th concordion:assertEquals="#username"&gt;</b>Matching Users<b>&lt;/th&gt;</b>
+  &lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;admin&lt;/td&gt;&lt;/tr&gt;
+<b>&lt;/table&gt;</b>
+&lt;p&gt;
+  Getting only the users containing the string <b>"&lt;b concordion:set=#searchString&gt;cato&lt;/b&gt;"</b>
+  will return:
+&lt;/p&gt;
+&lt;!-- #loopVar : expression --&gt;
+<b>&lt;table concordion:verifyRows="#username:getSearchResultsFor(#searchString)"&gt;</b>
+  &lt;tr&gt;
+    <b>&lt;th concordion:assertEquals="#username"&gt;</b>Matching Users<b>&lt;/th&gt;</b>
+  &lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;cato&lt;/td&gt;&lt;/tr&gt;
+  &lt;tr&gt;&lt;td&gt;cato1971&lt;/td&gt;&lt;/tr&gt;
+<b>&lt;/table&gt;</b>
+</pre>
+			<p>Given the following users:</p>
+			<table concordion:execute="setUpUser(#user)">
+				<tr>
+					<th concordion:set="#user">Users</th>
+				</tr>
+				<tr><td>admin</td></tr>
+				<tr><td>cato</td></tr>
+				<tr><td>cato1971</td></tr>
+			</table>
+			<p>
+				Getting only the users containing the string "<b concordion:set="#searchString">admin</b>"
+				will return:
+			</p>
+			<!-- #loopVar : expression -->
+			<table concordion:verifyRows="#username:getSearchResultsFor(#searchString)">
+				<tr>
+					<th concordion:assertEquals="#username">Matching Users</th>
+				</tr>
+				<tr><td>admin</td></tr>
+			</table>
+			<p>
+				Getting only the users containing the string "<b concordion:set="#searchString">cato</b>"
+				will return:
+			</p>
+			<!-- #loopVar : expression -->
+			<table concordion:verifyRows="#username:getSearchResultsFor(#searchString)">
+				<tr>
+					<th concordion:assertEquals="#username">Matching Users</th>
+				</tr>
+				<tr><td>cato</td></tr>
+				<tr><td>cato1971</td></tr>
+			</table>
+		</div>
 		
 		<!-- concordion:verifyRows -->
 		<!-- 

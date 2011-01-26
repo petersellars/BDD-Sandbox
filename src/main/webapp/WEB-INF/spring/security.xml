@@ -13,6 +13,8 @@
 		<authentication-provider>
 			<user-service>
 				<user name="admin" password="password" authorities="ROLE_ADMINISTRATOR"/>
+				<user name="cato" password="password" authorities="ROLE_ADMINISTRATOR"/>
+				<user name="cato1971" password="password" authorities="ROLE_ADMINISTRATOR"/>
 			</user-service>
 		</authentication-provider>	
 	</authentication-manager>

@@ -29,6 +29,7 @@ public class AsAnAdministratorTest {
 	private LoginPage loginPage;
 	private HomePage homePage;
 	
+	private Set<String> users = new HashSet<String>();
 	private String errorMessage;
 	private String role;
 	
@@ -45,6 +46,17 @@ public class AsAnAdministratorTest {
 	@After
 	public void logoutOfApplication() {
 		driver.get(URL_BDD_APP_LOGOUT);
+	}
+	
+	/**
+	 * Returns a message object for use in behaviour validation
+	 * @param welcomeMessage the whole welcome message string
+	 * @return a message object with the welcome and role messages set
+	 */
+	public Message split(String welcomeMessage) {
+        String[] words = welcomeMessage.split(" ");
+        return new Message(words[0], words[1]);
+
 	}
 
 	/**
@@ -98,12 +110,9 @@ public class AsAnAdministratorTest {
 	}
 	
 	/**
-	 * Gets the message when a user of the type passed in successfully
-	 * logs in to the application
-	 * @param role
-	 *  - the role of user to successfully log in with
+	 * Gets the message for the currently logged in user.
 	 * @return
-	 *  - the welcome message for the user of the role successfully logged in
+	 *  - the welcome message for the the current role successfully logged in
 	 */
 	public String loggedInMessageForRole() {
 		initWebDriverAndPageFactoryElements();
@@ -113,24 +122,41 @@ public class AsAnAdministratorTest {
 		return homePage.getWelcomeMessage();
 	}
 	
-	/** GETTERS & SETTERS **/
-	
-	public void setRole(String role) {
-		this.role = role;
+	/**
+	 * Gets the message when a user of the type passed in successfully
+	 * logs in to the application
+	 * @param role
+	 *  - the role of user to successfully log in with
+	 * @return
+	 *  - the welcome message for the user of the role successfully logged in
+	 */
+	public String loggedInMessageForRole(String role) {
+		setRole(role);
+		initWebDriverAndPageFactoryElements();
+		loginPage = PageFactory.initElements(driver, LoginPage.class);
+		homePage = loginPage.loginRoleSuccessfully(getRole());
+		PageFactory.initElements(driver, homePage);
+		return homePage.getWelcomeMessage();
 	}
 	
-	private String getRole() {
-		return this.role;
-	}
+	/**
+	 * Returns the search results for users containing the search string
+	 * in the user set.
+	 * @param searchString the string to search for in usernames
+	 * @return the list of usernames containing the search string
+	 */
+    public Iterable<String> getSearchResultsFor(String searchString) {
+        SortedSet<String> matches = new TreeSet<String>();
+        for (String username : users) {
+            if (username.contains(searchString)) {
+                matches.add(username);
+            }
+        }
+        return matches;
+    }
 	
-	//---------------------------------------------------------------
-	
-	private Set<String> users = new HashSet<String>();
-	
+	/** Inner Message Class **/
 	class Message {
-		
-		//public String welcome;
-		//public String role;
 		
 		private final String welcome;
 		private final String role;
@@ -147,30 +173,21 @@ public class AsAnAdministratorTest {
 		public String getRole() {
 			return this.role;
 		}
+		
 	}
 	
-	public Message split(String welcomeMessage) {
-        //Message message = new Message();
-        String[] words = welcomeMessage.split(" ");
-        //message.welcome = words[0];
-        //message.role = words[1];
-        return new Message(words[0], words[1]);
-        //return message;
-
+	/** GETTERS & SETTERS **/
+	
+	public void setRole(String role) {
+		this.role = role;
+	}
+	
+	private String getRole() {
+		return this.role;
 	}
 	
 	public void setUpUser(String username) {
 		users.add(username);
 	}
-	
-    public Iterable<String> getSearchResultsFor(String searchString) {
-        SortedSet<String> matches = new TreeSet<String>();
-        for (String username : users) {
-            if (username.contains(searchString)) {
-                matches.add(username);
-            }
-        }
-        return matches;
-    }
 
 }
